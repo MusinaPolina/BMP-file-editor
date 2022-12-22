@@ -1,71 +1,71 @@
-Приложение вырезает прямоугольник из BMP-файла с изображением,
-поворачивает этот прямоугольник на 90 градусов по часовой стрелке и сохраняет результат в отдельный
-файл.
+The application cuts a rectangle out of a BMP file with an image,
+rotates this rectangle 90 degrees clockwise and saves the result to a separate
+file.
 
-Все изображения (изначальное для чтения и сохранённый результат) хранятся в заданном формате:
+All images (the original read and the saved result) are stored in the specified format:
 
-* Общий формат — [BMP](https://ru.wikipedia.org/wiki/BMP).
-* В рамках формата BMP используется формат *DIB* с заголовком `BITMAPINFOHEADER` (версия 3).
-* Значение поля `biHeight` (высота изображения) строго больше нуля.
-* Используются 24 бита цвета на пиксель (один байт на цветовой канал).
-* Палитра (таблица цветов) не используется.
-* Сжатие не используется.
+* The general format is [BMP](https://en.wikipedia.org/wiki/BMP_file_format).
+* The *DIB* format with header `BITMAPINFOHEADER` (version 3) is used within the BMP format.
+* The value of the `biHeight` field (image height) is strictly greater than zero.
+* 24 bits of color per pixel are used (one byte per color channel).
+* Palette (color table) is not used.
+* No compression is used.
 
-### Консольное приложение
-Приложение запускается следующей командой:
+### Console Application
+The application is started with the following command:
 
 ```
-./hw-01_bmp crop-rotate ‹in-bmp› ‹out-bmp› ‹x› ‹y› ‹w› ‹h›
+./hw-01_bmp crop-rotate 'in-bmp' 'out-bmp' 'x' 'y' 'w' 'h'
 ```
 
-Используемые параметры:
+Parameters used:
 
-* `crop-rotate` — обязательный параметр, означающий выполняемое действие.
-* `in-bmp` — имя входного файла с изображением.
-* `out-bmp` — имя выходного файла с изображением.
-* `x`, `y` — координаты левого верхнего угла области, которую необходимо вырезать и повернуть.
-  Координаты начинаются с нуля, таким образом *(0, 0)* — это верхний левый угол.
-* `w`, `h` — соотвественно, ширина и высота области до поворота.
+* `crop-rotate` - mandatory parameter indicating the action to be performed.
+* `in-bmp` - name of the input file with the image.
+* `out-bmp` - name of the output file with the image.
+* `x`, `y` - coordinates of the upper left corner of the area to be cut and rotated.
+  The coordinates start from zero, so *(0, 0)* is the upper left corner.
+* `w`, `h` are, respectively, the width and height of the area before rotation.
 
-Таким образом, если обозначить ширину и высоту исходного изображения за `W` и `H`, соответственно,
-для корректных аргументов верны следующие неравенства:
+Thus, if we denote the width and height of the original image by `W` and `H`, respectively,
+the following inequalities are true for the correct arguments:
 
 * `0 <= x < x + w <= W`
-* `0 <= y < y + h <= H`
+* `0 <= y < y + h <= H`.
 
 
-В дополнение к команде `crop-rotate` есть команды `insert` и `extract`,
-позволяющие спрятать внутри изображения сообщение
-([стеганография](https://ru.wikipedia.org/wiki/%D0%A1%D1%82%D0%B5%D0%B3%D0%B0%D0%BD%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D1%8F)).
-Команда `insert` сохраняет в изображение сообщение, а `extract` — извлекает его оттуда.
+In addition to the `crop-rotate` command, there are the `insert` and `extract` commands,
+that allow you to hide a message inside the image
+([steganography](https://en.wikipedia.org/wiki/Steganography)).
+The `insert` command stores the message in the image and `extract` command extracts it from there.
 
 
-### Кодирование сообщения
-Исходное сообщение состоит только из заглавных латинских букв, пробела, точки и запятой.
+### Encoding the message
+The original message consists only of capital Latin letters, a space, a period, and a comma.
 
-Для передачи сообщения, помимо изображения-носителя, потребуется __ключ__ — текстовый файл,
-описывающий, в каких пикселях кодируются биты сообщения.
-В этом файле на отдельных строчках записаны:
+To send the message, in addition to the carrier image, you need a __key__ - a text file,
+which describes in which pixels the bits of the message are encoded.
+This file records on separate lines:
 
-* Координаты `x` и `y` (`0 <= x < W`, `0 <= y < H`) пикселя, в который надо сохранить
-  соответствующий бит.
-* Буква `R`/`G`/`B` обозначающая цветовой канал, в младшем бите которого требуется записать бит
-  сообщения.
+* The `x` and `y` coordinates (`0 <= x < W`, `0 <= y < H`) of the pixel in which the
+  the corresponding bit.
+* The letter `R`/`G`/`B` denotes the color channel in whose low-order bit the
+  messages.
 
-### Консольное приложение
-Для сохранения секретной строчки в изображение приложение запускается следующей командой:
+### Console application.
+To save the secret line to an image, the application is started with the following command:
 ```
-./hw-01_bmp insert ‹in-bmp› ‹out-bmp› ‹key-txt› ‹msg-txt›
-```
-
-Для извлечения секретной строчки из изображения приложение запускается следующей командой:
-```
-./hw-01_bmp extract ‹in-bmp› ‹key-txt› ‹msg-txt›
+./hw-01_bmp insert 'in-bmp' 'out-bmp' 'key-txt' 'msg-txt'
 ```
 
-Используемые параметры:
+To extract the secret string from the image, the application is started with the following command: ``:
+```
+./hw-01_bmp extract 'in-bmp' 'key-txt' 'msg-txt'
+```
 
-* `in-bmp` — имя входного файла с изображением.
-* `out-bmp` — имя выходного файла с изображением.
-* `key-txt` — тестовый файл с ключом.
-* `msg-txt` — текстовый файл с секретным сообщением.
+Parameters used:
+
+* ``in-bmp`` - the name of the input file with the image.
+* `out-bmp` - name of the output file with the image.
+* `key-txt` - test file with a key.
+* `msg-txt` - text file with a secret message.
